@@ -1,49 +1,44 @@
 #!/usr/bin/python3
+"""
+Define isWineer function, a solution to the Prime Game problem
+"""
 
-def is_prime(num):
-    """Check if a number is prime."""
-    if num < 2:
-        return False
-    for i in range(2, int(num**0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
+
+def primes(n):
+    """Return list of prime numbers between 1 and n inclusive
+       Args:
+        n (int): upper boundary of range. lower boundary is always 1
+    """
+    prime = []
+    sieve = [True] * (n + 1)
+    for p in range(2, n + 1):
+        if (sieve[p]):
+            prime.append(p)
+            for i in range(p, n + 1, p):
+                sieve[i] = False
+    return prime
+
 
 def isWinner(x, nums):
-    """Determine the winner of the prime game."""
-    if not nums or x <= 0:
+    """
+    Determines winner of Prime Game
+    Args:
+        x (int): no. of rounds of game
+        nums (int): upper limit of range for each round
+    Return:
+        Name of winner (Maria or Ben) or None if winner cannot be found
+    """
+    if x is None or nums is None or x == 0 or nums == []:
         return None
-
-    wins_maria = 0
-    wins_ben = 0
-
-    for n in nums:
-        primes_left = [i for i in range(1, n + 1) if is_prime(i)]
-
-        current_player = "Maria"
-        while primes_left:
-            move = min(primes_left)
-            primes_left = [num for num in primes_left if num % move != 0]
-
-            if not primes_left:
-                break
-
-            if current_player == "Maria":
-                current_player = "Ben"
-            else:
-                current_player = "Maria"
-
-        if current_player == "Maria":
-            wins_maria += 1
+    Maria = Ben = 0
+    for i in range(x):
+        prime = primes(nums[i])
+        if len(prime) % 2 == 0:
+            Ben += 1
         else:
-            wins_ben += 1
-
-    if wins_maria > wins_ben:
-        return "Maria"
-    elif wins_ben > wins_maria:
-        return "Ben"
-    else:
-        return None
-
-if __name__ == "__main__":
-    print("Winner: {}".format(isWinner(5, [2, 5, 1, 4, 3])))
+            Maria += 1
+    if Maria > Ben:
+        return 'Maria'
+    elif Ben > Maria:
+        return 'Ben'
+    return None
